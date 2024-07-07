@@ -1,11 +1,27 @@
 import User from "../Models/userModels.js";
+import upload_image from "../utils/image_upload.js";
 
 const registerUser = async (req, res) => {
     try {
-        console.log(req.body)
-        const { name, email, password, pic } = req.body;
+        const { name, email, password } = req.body;
 
-        // Check if all required fields are provided
+        // let pic = '';
+        let picCloud = ''
+        // console.log("djvdf", req.files);
+        if (req.files && req.files.pic) {
+            let { pic } = req.files;
+            // console.log("Image file:", image);  // Debugging log
+            // console.log("Image temp file path:", image.tempFilePath);  // Debugging log
+
+            if (pic.tempFilePath) {
+                picCloud = await upload_image(pic.tempFilePath);
+                // console.log(pic);
+            } else {
+                return res.json({ success: false, message: "provide image" });
+            }
+        }
+
+
         if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: "Please provide all details" });
         }
@@ -21,15 +37,34 @@ const registerUser = async (req, res) => {
             name,
             email,
             password,
-            pic,
+            pic: picCloud,
         });
 
         // Send success response
-        res.status(201).json({ success: true, message: "User created successfully", user });
+        return res.status(201).json({ success: true, message: "User created successfully", user });
     } catch (error) {
         console.error("Error registering user:", error);
-        res.status(500).json({ success: false, message: "Something went wrong", error: error.message });
+        return res.status(500).json({ success: false, message: "Something went wrong", error: error.message });
     }
 }
 
-export { registerUser };
+
+const login = async (req, res) => {
+
+
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        console.log(user)
+        if (user && (await user.matchPassword(password))) {
+            res.json({ success: true, message: "Login successfully" });
+        } else {
+            res.json({ success: false, message: "User not found with this email and password" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+export { registerUser, login };

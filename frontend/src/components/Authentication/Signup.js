@@ -44,24 +44,30 @@ const Signup = () => {
             setPicLoading(false);
             return;
         }
-        console.log(name, email, password, pic);
+
         try {
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("email", email);
+            formData.append("password", password);
+            formData.append("pic", pic);
+
             const config = {
                 headers: {
-                    "Content-type": "application/json",
+                    "Content-Type": "multipart/form-data",
                 },
             };
+
+            // console.log(formData?.pic);/
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
             const { data } = await axios.post(
-                "/api/user",
-                {
-                    name,
-                    email,
-                    password,
-                    pic,
-                },
+                "http://localhost:4000/api/v1/user/register",
+                formData,
                 config
             );
-            console.log(data);
+
             toast({
                 title: "Registration Successful",
                 status: "success",
@@ -69,6 +75,7 @@ const Signup = () => {
                 isClosable: true,
                 position: "bottom",
             });
+
             localStorage.setItem("userInfo", JSON.stringify(data));
             setPicLoading(false);
             navigate("/chats");
@@ -85,50 +92,11 @@ const Signup = () => {
         }
     };
 
-    const postDetails = (pics) => {
-        setPicLoading(true);
-        if (pics === undefined) {
-            toast({
-                title: "Please Select an Image!",
-                status: "warning",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom",
-            });
-            setPicLoading(false);
-            return;
-        }
-        console.log(pics);
-        if (pics.type === "image/jpeg" || pics.type === "image/png") {
-            const data = new FormData();
-            data.append("file", pics);
-            data.append("upload_preset", "chat-app");
-            data.append("cloud_name", "piyushproj");
-            fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
-                method: "post",
-                body: data,
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    setPic(data.url.toString());
-                    console.log(data.url.toString());
-                    setPicLoading(false);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    setPicLoading(false);
-                });
-        } else {
-            toast({
-                title: "Please Select an Image!",
-                status: "warning",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom",
-            });
-            setPicLoading(false);
-            return;
-        }
+
+
+    const handleFileChange = (event) => {
+        const resume = event.target.files[0];
+        setPic(resume);
     };
 
     return (
@@ -184,7 +152,7 @@ const Signup = () => {
                     type="file"
                     p={1.5}
                     accept="image/*"
-                    onChange={(e) => postDetails(e.target.files[0])}
+                    onChange={handleFileChange}
                 />
             </FormControl>
             <Button
