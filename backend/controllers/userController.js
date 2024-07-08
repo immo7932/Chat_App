@@ -1,5 +1,7 @@
+import { query } from "express";
 import User from "../Models/userModels.js";
 import upload_image from "../utils/image_upload.js";
+import jwt from "jsonwebtoken";
 
 const registerUser = async (req, res) => {
     try {
@@ -57,7 +59,8 @@ const login = async (req, res) => {
         const user = await User.findOne({ email });
         console.log(user)
         if (user && (await user.matchPassword(password))) {
-            res.json({ success: true, message: "Login successfully" });
+            const token = jwt.sign({ userId: user._id }, "1248782703098", { expiresIn: '1d' });
+            res.json({ success: true, message: "Login successfully", token });
         } else {
             res.json({ success: false, message: "User not found with this email and password" });
         }
@@ -67,4 +70,14 @@ const login = async (req, res) => {
     }
 };
 
-export { registerUser, login };
+
+const allUsers = async (req, res) => {
+    const keyword = req.query;
+    console.log(keyword)
+    return res.json({
+        success: true,
+        data: keyword
+    })
+}
+
+export { registerUser, login, allUsers };

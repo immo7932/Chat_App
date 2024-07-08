@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useToast } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { StoreContext } from "../../context/StoreContext.js"
+
 
 const Login = () => {
+    const { token, setToken } = useContext(StoreContext)
     const [show, setShow] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const toast = useToast();
+    const navigate = useNavigate();
 
     const handleClick = () => setShow(!show);
 
     const submitHandler = async () => {
+        console.log(email, password);
         setLoading(true);
         if (!email || !password) {
             toast({
@@ -28,7 +35,39 @@ const Login = () => {
             return;
         }
 
-        // Add your login logic here
+        try {
+            const config = {
+                headers: {
+                    "content-type": "application/json",
+                }
+            }
+
+            const { data } = await axios.post("http://localhost:4000/api/v1/user/login", { email, password }, config);
+            console.log(data);
+            toast({
+                title: data.message,
+                status: "success",  // Corrected to use a string value
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+            });
+            console.log(data.token)
+            if (data.success === true) {
+                setToken(data.token);
+                localStorage.setItem("token", data.token)
+                console.log("token", token);
+                navigate("/chats")
+            };
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: error.response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+            });
+        }
 
         setLoading(false);
     };
