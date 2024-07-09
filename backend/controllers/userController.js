@@ -59,7 +59,7 @@ const login = async (req, res) => {
         const user = await User.findOne({ email });
         console.log(user)
         if (user && (await user.matchPassword(password))) {
-            const token = jwt.sign({ userId: user._id }, "1248782703098", { expiresIn: '1d' });
+            const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
             res.json({ success: true, message: "Login successfully", token });
         } else {
             res.json({ success: false, message: "User not found with this email and password" });
@@ -72,12 +72,23 @@ const login = async (req, res) => {
 
 
 const allUsers = async (req, res) => {
-    const keyword = req.query;
-    console.log(keyword)
-    return res.json({
-        success: true,
-        data: keyword
-    })
+    const keyword = req.query.search
+        ? {
+            $or: [
+                { name: { $regex: req.query.search, $options: "i" } },
+                { email: { $regex: req.query.search, $options: "i" } }
+            ]
+        }
+        : {};
+
+    try {
+        const users = await User.find(keyword);
+        const filteredUsers = users.filter(user => user._id.toString() !== req.user._id.toString());
+        res.send(filteredUsers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ success: false, message: "Server error" });
+    }
 }
 
 export { registerUser, login, allUsers };

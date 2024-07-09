@@ -4,9 +4,11 @@ import chats from "./data/data.js";
 import dbConnection from "./config/db.js";
 import userRouter from './routes/userRouter.js'
 import fileUpload from "express-fileupload";
-// import { urlencoded } from "body-parser";
+import dotenv from 'dotenv';
 
 
+
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 app.use(cors());
