@@ -59,7 +59,7 @@ const GroupChatModal = ({ children }) => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.get(`http://localhost:4000/api/v1/user/?search=${query}`, config);
+            const { data } = await axios.get(`https://chat-app-backend-fzjv.onrender.com/api/v1/user/?search=${query}`, config);
             console.log(data);
             setLoading(false);
             setSearchResult(data);
@@ -99,7 +99,7 @@ const GroupChatModal = ({ children }) => {
                 },
             };
             const { data } = await axios.post(
-                `http://localhost:4000/api/v1/chat/createGroup`,
+                `https://chat-app-backend-fzjv.onrender.com/api/v1/chat/createGroup`,
                 {
                     name: groupChatName,
                     users: JSON.stringify(selectedUsers.map((u) => u._id)),

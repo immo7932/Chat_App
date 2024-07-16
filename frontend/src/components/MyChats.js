@@ -22,7 +22,7 @@ const MyChats = ({ fetchAgain }) => {
                 }
             }
 
-            const { data } = await axios.get("http://localhost:4000/api/v1/chat/fetchchat", config);
+            const { data } = await axios.get("https://chat-app-backend-fzjv.onrender.com/api/v1/chat/fetchchat", config);
 
             setChats(Array.isArray(data) ? data : []);
         } catch (error) {
