@@ -8,15 +8,16 @@ import StoreContextprovider from './context/StoreContext.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <StoreContextprovider>
-        <ChakraProvider>
-          <App />
-        </ChakraProvider>
-      </StoreContextprovider>
-    </BrowserRouter>
-  </React.StrictMode>
+
+  <BrowserRouter>
+    <StoreContextprovider>
+
+      <ChakraProvider>
+        <App />
+      </ChakraProvider>
+
+    </StoreContextprovider>
+  </BrowserRouter>
 );
 
 

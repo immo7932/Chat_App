@@ -7,22 +7,16 @@ const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        // let pic = '';
-        let picCloud = ''
-        // console.log("djvdf", req.files);
+        let picCloud = '';
         if (req.files && req.files.pic) {
             let { pic } = req.files;
-            // console.log("Image file:", image);  // Debugging log
-            // console.log("Image temp file path:", image.tempFilePath);  // Debugging log
 
             if (pic.tempFilePath) {
                 picCloud = await upload_image(pic.tempFilePath);
-                // console.log(pic);
             } else {
                 return res.json({ success: false, message: "provide image" });
             }
         }
-
 
         if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: "Please provide all details" });
@@ -42,13 +36,30 @@ const registerUser = async (req, res) => {
             pic: picCloud,
         });
 
+        let token = '';
+        if (user) {
+            token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
+        }
+        // console.log(token)
         // Send success response
-        return res.status(201).json({ success: true, message: "User created successfully", user });
+        return res.status(201).json({
+            success: true,
+            message: "Registered Successfully",
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            pic: user.pic,
+            token
+        });
     } catch (error) {
         console.error("Error registering user:", error);
         return res.status(500).json({ success: false, message: "Something went wrong", error: error.message });
     }
-}
+};
+
+
+
 
 
 const login = async (req, res) => {
@@ -57,10 +68,20 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        console.log(user)
+        /// console.log(user)
         if (user && (await user.matchPassword(password))) {
             const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
-            res.json({ success: true, message: "Login successfully", token });
+
+
+            res.json({
+                success: true, message: "Login Successfully",
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                isAdmin: user.isAdmin,
+                pic: user.pic,
+                token
+            });
         } else {
             res.json({ success: false, message: "User not found with this email and password" });
         }

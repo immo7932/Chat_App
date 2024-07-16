@@ -10,7 +10,7 @@ import { StoreContext } from "../../context/StoreContext.js"
 
 
 const Login = () => {
-    const { token, setToken } = useContext(StoreContext)
+    const { user, setUser } = useContext(StoreContext)
     const [show, setShow] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -21,7 +21,7 @@ const Login = () => {
     const handleClick = () => setShow(!show);
 
     const submitHandler = async () => {
-        console.log(email, password);
+        // console.log(email, password);
         setLoading(true);
         if (!email || !password) {
             toast({
@@ -43,7 +43,7 @@ const Login = () => {
             }
 
             const { data } = await axios.post("http://localhost:4000/api/v1/user/login", { email, password }, config);
-            console.log(data);
+            // console.log(data);
             toast({
                 title: data.message,
                 status: "success",  // Corrected to use a string value
@@ -51,12 +51,13 @@ const Login = () => {
                 isClosable: true,
                 position: "bottom",
             });
-            console.log(data.token)
+
             if (data.success === true) {
-                setToken(data.token);
-                localStorage.setItem("token", data.token)
-                console.log("token", token);
-                navigate("/chats")
+
+                setUser(data); // Assuming 'data.user' contains the user info
+                localStorage.setItem('userInfo', JSON.stringify(data)); // Save user info to localStorage
+                console.log(user)
+                navigate("/chats");
             };
         } catch (error) {
             console.log(error);

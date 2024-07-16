@@ -1,42 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useContext, useState } from "react";
+import { StoreContext } from "../context/StoreContext.js";
+import { Box } from "@chakra-ui/react";
+import SideDrawer from "../components/Miscellinous/SideDrawer.js";
+import MyChats from "../components/MyChats.js";
+import ChatBox from "../components/ChatBox.js";
 
 const ChatPages = () => {
-    const [chats, setChats] = useState([]);
-
-    const fetchChats = async () => {
-        try {
-            const response = await axios.get('http://localhost:4000/api/chat');
-            const data = response.data.chats;
-            if (Array.isArray(data)) {
-                setChats(data);
-            } else {
-                console.error('Expected an array of chats:', data);
-            }
-        } catch (error) {
-            console.error('Error fetching chats:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchChats();
-    }, []);
-
-    useEffect(() => {
-        console.log('Chats state:', chats);
-    }, [chats]);
-
+    const { user } = useContext(StoreContext);
+    const [fetchChatAgain, setFetchAgain] = useState(false);
     return (
         <>
-            <div>
-                {Array.isArray(chats) ? (
-                    chats.map((chat) => (
-                        <div key={chat._id}>{chat.chatName}</div>
-                    ))
-                ) : (
-                    <div>No chats available</div>
-                )}
-            </div>
+            <div style={{ width: "100%" }}>
+                {user && <SideDrawer />}
+
+                <Box
+                    display="flex" justifyContent='space-between' w='100%' h='91.5vh' p='10px'>
+                    {user && <MyChats fetchChatAgain={fetchChatAgain} />}
+                    {user && <ChatBox fetchChatAgain={fetchChatAgain} setFetchAgain={setFetchAgain} />}
+                </Box>
+            </div >
         </>
     );
 };

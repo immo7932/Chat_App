@@ -1,16 +1,33 @@
-import { createContext, useState } from "react";
-
-
+import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 export const StoreContext = createContext(null);
 
-const StoreContextprovider = (props) => {
+const StoreContextProvider = (props) => {
+    const [user, setUser] = useState(null);
+    const [selectedChat, setSelectedChat] = useState();
+    const [chats, setChats] = useState([]);
+    const [notifications, setNotification] = useState([])
+    const navigate = useNavigate()
 
-    const [token, setToken] = useState("");
+    useEffect(() => {
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        setUser(userInfo);
+
+        if (!userInfo) navigate("/")
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [useNavigate]);
+
+
 
     const contextValue = {
-        token,
-        setToken,
-
+        user,
+        setUser,
+        selectedChat,
+        setSelectedChat,
+        chats,
+        setChats,
+        notifications,
+        setNotification
     };
 
     return (
@@ -20,4 +37,4 @@ const StoreContextprovider = (props) => {
     );
 };
 
-export default StoreContextprovider;
+export default StoreContextProvider;
