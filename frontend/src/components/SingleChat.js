@@ -15,7 +15,7 @@ import ScrollableChat from "./ScrollableChat.js"
 import io from "socket.io-client";
 import animationData from "../animations/typing.json"
 
-const ENDPOINT = "https://chat-app-backend-fzjv.onrender.com";
+const ENDPOINT = "http://localhost:4000";
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchChatAgain, setFetchAgain }) => {
@@ -50,7 +50,7 @@ const SingleChat = ({ fetchChatAgain, setFetchAgain }) => {
             setLoading(true);
 
             const { data } = await axios.get(
-                `https://chat-app-backend-fzjv.onrender.com/api/v1/message/${selectedChat._id}`,
+                `http://localhost:4000/api/v1/message/${selectedChat._id}`,
                 config
             );
 
@@ -112,7 +112,7 @@ const SingleChat = ({ fetchChatAgain, setFetchAgain }) => {
                     },
                 };
                 setNewMessage(""); // Clear the input field after sending the message
-                const { data } = await axios.post("https://chat-app-backend-fzjv.onrender.com/api/v1/message",
+                const { data } = await axios.post("http://localhost:4000/api/v1/message",
                     {
                         content: newMessage,
                         chatId: selectedChat._id, // Use selectedChat._id instead of selectedChat

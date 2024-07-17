@@ -63,7 +63,7 @@ const Signup = () => {
 
             }
             const { data } = await axios.post(
-                "https://chat-app-backend-fzjv.onrender.com/api/v1/user/register",
+                "http://localhost:4000/api/v1/user/register",
                 formData,
                 config
             );

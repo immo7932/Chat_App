@@ -42,7 +42,7 @@ const Login = () => {
                 }
             }
 
-            const { data } = await axios.post("https://chat-app-backend-fzjv.onrender.com/api/v1/user/login", { email, password }, config);
+            const { data } = await axios.post("http://localhost:4000/api/v1/user/login", { email, password }, config);
             // console.log(data);
             toast({
                 title: data.message,
