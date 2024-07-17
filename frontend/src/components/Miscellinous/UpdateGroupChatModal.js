@@ -47,7 +47,7 @@ const UpdateGroupChatModal = ({ fetchChatAgain, setFetchAgain, fetchMessages }) 
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.get(`http://localhost:4000/api/v1/user/?search=${search}`, config);
+            const { data } = await axios.get(`https://chat-app-backend-fzjv.onrender.com/api/v1/user/?search=${search}`, config);
 
             setLoading(false);
             setSearchResult(data);
@@ -75,7 +75,7 @@ const UpdateGroupChatModal = ({ fetchChatAgain, setFetchAgain, fetchMessages }) 
                 },
             };
             const { data } = await axios.put(
-                `http://localhost:4000/api/v1/chat/renameGroup`,
+                `https://chat-app-backend-fzjv.onrender.com/api/v1/chat/renameGroup`,
                 {
                     chatId: selectedChat._id,
                     chatName: groupChatName,
@@ -137,7 +137,7 @@ const UpdateGroupChatModal = ({ fetchChatAgain, setFetchAgain, fetchMessages }) 
             };
 
             const { data } = await axios.put(
-                `http://localhost:4000/api/v1/chat/addtogroup`,
+                `https://chat-app-backend-fzjv.onrender.com/api/v1/chat/addtogroup`,
                 {
                     chatId: selectedChat._id,
                     userId: user1._id,
@@ -182,7 +182,7 @@ const UpdateGroupChatModal = ({ fetchChatAgain, setFetchAgain, fetchMessages }) 
                 },
             };
             const { data } = await axios.put(
-                `http://localhost:4000/api/v1/chat/removefromgroup`,
+                `https://chat-app-backend-fzjv.onrender.com/api/v1/chat/removefromgroup`,
                 {
                     chatId: selectedChat._id,
                     userId: user1._id,

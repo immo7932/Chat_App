@@ -69,7 +69,7 @@ const SideDrawer = () => {
                 },
             };
 
-            const { data } = await axios.get(`http://localhost:4000/api/v1/user/?search=${search}`, config);
+            const { data } = await axios.get(`https://chat-app-backend-fzjv.onrender.com/api/v1/user/?search=${search}`, config);
 
             setLoading(false);
             setSearchResult(data);
@@ -96,7 +96,7 @@ const SideDrawer = () => {
                 }
             };
 
-            const { data } = await axios.post("http://localhost:4000/api/v1/chat/accesschat", { userId }, config);
+            const { data } = await axios.post("https://chat-app-backend-fzjv.onrender.com/api/v1/chat/accesschat", { userId }, config);
 
             if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
             setSelectedChat(data);
